@@ -1,7 +1,7 @@
 .PHONY: all build test clean deps lint dist fmt fmt-check install-tools
 
 # Variables
-BINARY_NAME=optic
+BINARY_NAME=bloatjack
 VERSION=$(shell git describe --tags --always --dirty)
 LDFLAGS=-ldflags "-X main.Version=$(VERSION)"
 DIST_DIR=dist
@@ -17,7 +17,7 @@ deps: install-tools
 	go mod tidy
 
 build:
-	go build $(LDFLAGS) -o bin/$(BINARY_NAME) ./cmd/optic
+	go build $(LDFLAGS) -o bin/$(BINARY_NAME) ./cmd/bloatjack
 
 test:
 	go test -v ./...
@@ -58,7 +58,7 @@ fmt-check: install-tools
 
 # Development helpers
 dev:
-	go run cmd/optic/main.go
+	go run cmd/bloatjack/main.go
 
 # Distribution helpers
 dist: clean
@@ -71,7 +71,7 @@ dist: clean
 			output="$$output.exe"; \
 		fi; \
 		echo "Building $$output"; \
-		GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $$output ./cmd/optic; \
+		GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $$output ./cmd/bloatjack; \
 	done
 
 # Release helpers
