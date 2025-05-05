@@ -2,6 +2,9 @@
 package cli
 
 import (
+	"fmt"
+
+	"github.com/Solexma/bloatjack/internal/rules"
 	"github.com/spf13/cobra"
 )
 
@@ -19,8 +22,16 @@ and automatically right-sizing resources.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() error {
-	// Set the version string for the root command
-	rootCmd.Version = Version
+	// Set the version string for the root command including the ruleset version
+	rulesetVersion, err := rules.GetRulesetVersion()
+	if err != nil {
+		// If there's an error reading the ruleset version, just use the binary version
+		rootCmd.Version = Version
+	} else {
+		// Version format: "bloatjack version v0.3.4 (ruleset 2025-06-01)"
+		rootCmd.Version = fmt.Sprintf("%s (ruleset %s)", Version, rulesetVersion)
+	}
+
 	return rootCmd.Execute()
 }
 
