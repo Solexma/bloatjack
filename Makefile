@@ -17,10 +17,13 @@ deps: install-tools
 	go mod tidy
 
 build:
-	go build $(LDFLAGS) -o bin/$(BINARY_NAME) ./cmd/bloatjack
+	go build $(LDFLAGS) -o bin/$(BINARY_NAME) ./
 
 test:
-	go test -v ./...
+	@echo "Running tests and generating coverage report..."
+	go test -v -coverprofile=coverage.out ./...
+	@echo "\nCoverage Summary:"
+	@go tool cover -func=coverage.out
 
 clean:
 	rm -rf bin/ $(DIST_DIR)/
@@ -58,7 +61,27 @@ fmt-check: install-tools
 
 # Development helpers
 dev:
-	go run cmd/bloatjack/main.go
+	@if [ "$(ARGS)" = "" ]; then \
+		go run main.go; \
+	else \
+		go run main.go $(ARGS); \
+	fi
+
+# Alias for dev with rules command
+rules:
+	@make dev ARGS="rules"
+
+# Alias for dev with scan command
+scan:
+	@make dev ARGS="scan"
+
+# Alias for dev with tune command
+tune:
+	@make dev ARGS="tune"
+
+# Alias for dev with ui command
+ui:
+	@make dev ARGS="ui"
 
 # Distribution helpers
 dist: clean
@@ -71,7 +94,7 @@ dist: clean
 			output="$$output.exe"; \
 		fi; \
 		echo "Building $$output"; \
-		GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $$output ./cmd/bloatjack; \
+		GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $$output ./; \
 	done
 
 # Release helpers
