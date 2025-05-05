@@ -132,23 +132,23 @@ git flow hotfix finish hotfix-name
 ```plaintext
 bloatjack/
 ├── docs/                # Documentation
+├── examples/            # Example configuration and use case
 ├── internal/            # Private application code
 |   ├── cli/             # Cli commands
-│   ├── root.go          # definisce rootCmd
-│   ├── scan.go          # `bloatjack scan`
-│   ├── tune.go          # `bloatjack tune`
-│   └── rules.go         # `bloatjack rules`
+│   │   ├── root.go      # definisce rootCmd
+│   │   ├── scan.go      # `bloatjack scan`
+│   │   ├── tune.go      # `bloatjack tune`
+│   │   ├── rules.go     # `bloatjack rules`
+│   │   └── engine.go    # Apply(serviceStats) → Patch
 │   ├── rules/           # loader + rulebook validator
+|   |   ├── VERSION      # ISO‑8601 date of the embedded ruleset            
 │   │   ├── embed.go     # go:embed *.yml
 │   │   ├── parser.go    # Parse([]byte) → []Rule
 │   │   └── engine.go    # Apply(serviceStats) → Patch
 │   ├── compose/         # parsing/AST of docker‑compose
 │   ├── profiler/        # wrapper docker stats
 │   └── patch/           # diff YAML / git commit
-├── pkg/                 # Public library code
-│   └── bloatjack.go
-├── main.go              # version, init rootCmd, Execute()
-└── go.mod
+├── main.go              # Main application entry point
 ```
 
 ## Contributing

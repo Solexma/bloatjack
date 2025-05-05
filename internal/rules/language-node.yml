@@ -1,0 +1,36 @@
+# Built‑in optimisation rules specific to Node.js stacks
+# Version: 2025‑05‑05
+
+rules:
+  # 1. Cap max_old_space_size to 90 % of the container memory limit (if defined)
+  - id: node-max-old-space@1.0.0
+    priority: 70
+    match: {lang: node}
+    if: mem_limit_mb > 0
+    set_env:
+      NODE_OPTIONS: "--max_old_space_size={int(mem_limit_mb*0.9)}"
+    note: "Sets V8 heap limit to 90% of available RAM, preventing OOM errors in SSR builds."
+
+  # 2. Persistent cache for Yarn v2/PNPM store
+  - id: yarn-pnpm-cache@1.0.0
+    priority: 60
+    match: {lang: node}
+    ensure_volume:
+      target: /usr/local/share/.cache
+      mode: delegated
+    note: "Maintains Yarn/PNPM package cache between rebuilds to accelerate subsequent installations."
+
+  # 3. Increase inotify watchers if host is Linux → better hot‑reload
+  - id: inotify-watchers@1.0.0
+    priority: 50
+    match: {lang: node, host_os: linux}
+    sysctls:
+      fs.inotify.max_user_watches: "524288"
+    note: "Prevents EMFILE errors (too many open files) during hot-reload on large monorepos."
+
+  # 4. Warning on macOS polling: suggest virtiofs
+  - id: nodemon-polling-warn@1.0.0
+    priority: 40
+    match: {lang: node, host_os: darwin}
+    action: warn
+    note: "Nodemon on macOS uses polling if the volume is gRPC-FUSE. Consider virtiofs for better performance."
