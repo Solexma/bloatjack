@@ -1,4 +1,4 @@
-.PHONY: all build test clean deps lint dist fmt fmt-check install-tools
+.PHONY: all build test clean deps lint dist fmt fmt-check install-tools test-examples
 
 # Variables
 BINARY_NAME=bloatjack
@@ -24,6 +24,19 @@ test:
 	go test -v -coverprofile=coverage.out ./...
 	@echo "\nCoverage Summary:"
 	@go tool cover -func=coverage.out
+
+# Test example configurations
+test-examples:
+	@echo "Testing example Docker Compose configurations..."
+	@echo "1. Starting microservices stack..."
+	@docker-compose -f examples/microservices-stack.yml up -d
+	@echo "2. Running Bloatjack scan..."
+	@./bin/$(BINARY_NAME) scan || true
+	@echo "3. Running Bloatjack tune (dry-run)..."
+	@./bin/$(BINARY_NAME) tune --dry-run || true
+	@echo "4. Cleaning up..."
+	@docker-compose -f examples/microservices-stack.yml down
+	@echo "Example tests completed!"
 
 clean:
 	rm -rf bin/ $(DIST_DIR)/

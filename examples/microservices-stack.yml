@@ -1,0 +1,53 @@
+version: '3.8'
+
+# Example microservices stack for testing Bloatjack optimization rules
+# This file contains common service types that can be optimized by Bloatjack
+
+services:
+  # Database service - tends to use significant memory
+  postgres:
+    image: postgres:14
+    container_name: bloatjack-example-postgres
+    environment:
+      POSTGRES_USER: bloatjack
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: bloatjack_demo
+    # Default configuration without optimization
+    deploy:
+      resources:
+        limits:
+          memory: 2g  # Overprovisioned memory
+          cpus: '1.0' # Overprovisioned CPU
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  # Web/API service - typically less resource intensive
+  api:
+    image: node:18-alpine
+    container_name: bloatjack-example-api
+    working_dir: /app
+    command: sh -c "echo 'Simulating API server' && sleep infinity"
+    deploy:
+      resources:
+        limits:
+          memory: 1g   # Overprovisioned memory
+          cpus: '0.5'  # Reasonable CPU limit
+    ports:
+      - "3000:3000"
+
+  # Cache service - memory intensive but can be optimized
+  redis:
+    image: redis:7
+    container_name: bloatjack-example-redis
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '0.5'
+    ports:
+      - "6379:6379"
+
+volumes:
+  pg_data:
