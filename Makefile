@@ -95,6 +95,7 @@ dist: clean
 		fi; \
 		echo "Building $$output"; \
 		GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $$output ./; \
+		chmod +x $$output; \
 	done
 
 # Release helpers
