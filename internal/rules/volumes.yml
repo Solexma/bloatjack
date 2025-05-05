@@ -1,0 +1,46 @@
+# Built‑in volume & cache rules for Bloatjack
+# Version: 2025‑05‑05
+
+rules:
+  # Cache node_modules for Node.js projects
+  - id: node-cache@1.0.0
+    priority: 60
+    match: {lang: node}
+    ensure_volume:
+      target: /usr/src/app/node_modules
+      mode: delegated
+    note: "Persist node_modules to reduce npm/yarn install time."
+
+  # Cache pip for Python
+  - id: pip-cache@1.0.0
+    priority: 60
+    match: {lang: python}
+    ensure_volume:
+      target: /root/.cache/pip
+    note: "Persist pip cache to avoid repeated downloads."
+
+  # Cache poetry for Python/Poetry
+  - id: poetry-cache@1.0.0
+    priority: 60
+    match:
+      lang: python
+      env_contains: POETRY_VERSION
+    ensure_volume:
+      target: /root/.cache/pypoetry
+    note: "Persist poetry cache to speed up installations."
+
+  # Cache Maven
+  - id: maven-cache@1.0.0
+    priority: 60
+    match: {lang: java}
+    ensure_volume:
+      target: /root/.m2
+    note: "Persist Maven cache to avoid repeated dependency downloads."
+
+  # Use tmpfs for /tmp for generic apps
+  - id: tmpfs-tmp@1.0.0
+    priority: 50
+    match: {kind: app}
+    set:
+      tmpfs: "/tmp:size=64m"
+    note: "Move temporary files to compressed RAM for better performance."

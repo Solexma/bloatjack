@@ -130,12 +130,25 @@ git flow hotfix finish hotfix-name
 ## Project Structure
 
 ```plaintext
-.
-├── cmd/              # CLI commands
-├── internal/         # Private application code
-├── pkg/             # Public library code
-├── docs/            # Documentation
-└── examples/        # Example configurations
+bloatjack/
+├── docs/                # Documentation
+├── internal/            # Private application code
+|   ├── cli/             # Cli commands
+│   ├── root.go          # definisce rootCmd
+│   ├── scan.go          # `bloatjack scan`
+│   ├── tune.go          # `bloatjack tune`
+│   └── rules.go         # `bloatjack rules`
+│   ├── rules/           # loader + rulebook validator
+│   │   ├── embed.go     # go:embed *.yml
+│   │   ├── parser.go    # Parse([]byte) → []Rule
+│   │   └── engine.go    # Apply(serviceStats) → Patch
+│   ├── compose/         # parsing/AST of docker‑compose
+│   ├── profiler/        # wrapper docker stats
+│   └── patch/           # diff YAML / git commit
+├── pkg/                 # Public library code
+│   └── bloatjack.go
+├── main.go              # version, init rootCmd, Execute()
+└── go.mod
 ```
 
 ## Contributing

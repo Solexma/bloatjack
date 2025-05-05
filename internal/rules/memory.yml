@@ -1,0 +1,40 @@
+# Built‑in memory & CPU optimisation rules for Bloatjack
+# Version: 2025‑05‑05
+
+rules:
+  - id: mem-cap-db@1.0.0
+    priority: 80
+    match: {kind: db}
+    if: peak_mem_mb > 800
+    set:
+      mem_limit: "{peak_mem_mb*1.25}m"
+      cpus: "0.25"
+    note: "Limit DB to 125% of its peak and ¼ core to avoid swap."
+
+  # Generic limit for any overly greedy service
+  - id: generic-memcap@1.0.0
+    priority: 70
+    match: {kind: any}
+    if: peak_mem_pct > 70
+    set:
+      mem_limit: "{round_up(peak_mem_mb*1.2,128)}m"
+      mem_reservation: "{round_up(peak_mem_mb*0.8,128)}m"
+      cpus: "{min(max_cpu_pct/100*host_cores,1):.2f}"
+    note: "Keeps RAM under control and minimizes fan noise."
+
+  # Optimize Java: align -Xmx
+  - id: jvm-xmx@1.0.0
+    priority: 75
+    match: {lang: java}
+    set_env:
+      JAVA_TOOL_OPTIONS: "-Xmx{int(mem_limit_mb*0.8)}m"
+    note: "Sets JVM heap limit to 80% of container mem_limit."
+
+  # Automatic offloading for really heavy DBs
+  - id: db-offload@1.0.0
+    priority: 90
+    match: {kind: db}
+    if: peak_mem_mb > 1200
+    action: offload
+    node_pool: "remote-ssd"
+    note: "If DB exceeds 1.2 GB peak, move it to remote SSD node."

@@ -1,0 +1,24 @@
+version: "1" # Required by schema validator
+
+run:
+  # Default timeout: 1m. Increase if needed.
+  timeout: 3m
+  # Default exit code is 1. Change if needed.
+  issues-exit-code: 1
+  # Include test files (default: true)
+  tests: true
+
+linters:
+  enable:
+    - gofmt
+    - errcheck # Checks for unchecked errors
+    - unused # Checks for unused code
+    - staticcheck # Many useful static analysis checks
+    - gosimple # Suggests simplifying code
+    - stylecheck # Checks style guidelines
+    - typecheck # Runs go type checking
+
+issues:
+  # Optional: You might want to keep these low or zero during active development
+  max-issues-per-linter: 0
+  max-same-issues: 0
