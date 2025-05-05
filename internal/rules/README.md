@@ -119,7 +119,7 @@ bloatjack tune --dry-run
 
 ## Contributing
 
-Pull requests are welcome! Please follow the checklist in `/CONTRIBUTING.md` and add unit tests for new conditions. For bigger changes (new actions, expression predicates) open an issue first to align on direction.
+Pull requests are welcome! Please follow the checklist in `/.github/CONTRIBUTING.md` and add unit tests for new conditions. For bigger changes (new actions, expression predicates) open an issue first to align on direction.
 
 ## License
 

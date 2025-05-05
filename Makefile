@@ -102,7 +102,7 @@ dist: clean
 release: dist
 	@echo "Creating release for version $(VERSION)"
 	@echo "Please ensure you have:"
-	@echo "1. Updated CHANGELOG.md"
+	@echo "1. Updated .github/CHANGELOG.md"
 	@echo "2. Created and pushed a git tag"
 	@echo "3. Built binaries for all platforms"
 	@echo "4. Created a GitHub release" 

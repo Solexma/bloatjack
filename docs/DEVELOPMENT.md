@@ -103,7 +103,7 @@
 ## Release Process
 
 1. Update version in go.mod
-2. Update CHANGELOG.md
+2. Update .github/CHANGELOG.md
 3. Create git tag
 4. Build binaries
 5. Create GitHub release
